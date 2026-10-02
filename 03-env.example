@@ -1,0 +1,17 @@
+# --- Server ---
+PORT=4000
+NODE_ENV=development
+
+# --- PostgreSQL ---
+# Use either a single connection string...
+DATABASE_URL=postgres://lgc_user:lgc_password@localhost:5432/lgc_smart_farm
+# ...or discrete vars (DATABASE_URL wins if both are set)
+PGHOST=localhost
+PGPORT=5432
+PGUSER=lgc_user
+PGPASSWORD=lgc_password
+PGDATABASE=lgc_smart_farm
+
+# --- Auth ---
+JWT_SECRET=change-this-to-a-long-random-secret
+JWT_EXPIRES_IN=8h
