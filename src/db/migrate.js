@@ -1,23 +1,18 @@
-const { Pool } = require("pg");
-require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
+const { pool } = require("../db");
 
-const pool = new Pool(
-  process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL }
-    : {
-        host: process.env.PGHOST,
-        port: Number(process.env.PGPORT) || 5432,
-        user: process.env.PGUSER,
-        password: process.env.PGPASSWORD,
-        database: process.env.PGDATABASE,
-      }
-);
+async function migrate() {
+  const schemaPath = path.join(__dirname, "..", "..", "sql", "schema.sql");
+  const sql = fs.readFileSync(schemaPath, "utf8");
 
-pool.on("error", (err) => {
-  console.error("Unexpected PostgreSQL error:", err);
+  console.log("Applying schema.sql ...");
+  await pool.query(sql);
+  console.log("Schema applied successfully.");
+  await pool.end();
+}
+
+migrate().catch((err) => {
+  console.error("Migration failed:", err);
+  process.exit(1);
 });
-
-module.exports = {
-  query: (text, params) => pool.query(text, params),
-  pool,
-};
